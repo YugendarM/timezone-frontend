@@ -16,16 +16,17 @@ const HomePageComponent = () => {
   },[])
 
   const getAllTimezone = async () => {
-    const zones = moment.tz.names().map((zone) => ({
-        name: zone,
-        offset: moment.tz(zone).utcOffset()
-    }));
+    // const zones = moment.tz.names().map((zone) => ({
+    //     name: zone,
+    //     offset: moment.tz(zone).utcOffset()
+    // }));
 
-    setTimezones(zones.map((zone) => {
-      return "(UTC+"+zone.offset + ") "+zone.name 
-    }));
-    // setTimezones(moment.tz.names())
+    // setTimezones(zones.map((zone) => {
+    //   return "(UTC+"+zone.offset + ") "+zone.name 
+    // }));
+    setTimezones(moment.tz.names())
 };
+
 
 
   const handleSave = async() => {

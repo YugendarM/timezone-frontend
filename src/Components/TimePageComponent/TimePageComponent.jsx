@@ -8,7 +8,11 @@ const TimePageComponent = () => {
     const [utcConvertedDate, setUtcConvertedDate] = useState({startDate: "", endDate: ""})
 
     useEffect(() => {
-        getTimezoneData()
+        const fetchData = async() => {
+            await getTimezoneData()
+        }
+
+        fetchData()
     },[])
 
     const getTimezoneData = async () => {
@@ -16,8 +20,8 @@ const TimePageComponent = () => {
             const response = await axios.get("http://localhost:3500/api/v1/timezone/latest_entry");
             setTimezoneData(response.data);
             console.log(response);
-            convertUtcTimezone(response.data.startDate, response.data.endDate);
-            checkIsDateValid();
+            // convertUtcTimezone(response.data.startDate, response.data.endDate);
+            // checkIsDateValid();
         } catch (error) {
             console.error("Error fetching timezone data:", error);
         }
@@ -31,7 +35,6 @@ const TimePageComponent = () => {
         if(current_Date.isBetween(timezoneData.startDate, timezoneData.endDate)){
             setEdit(true)
         }
-    
     }
 
     const convertUtcTimezone = (startDate, endDate) => { 
@@ -45,6 +48,7 @@ const TimePageComponent = () => {
         return { convertedStart, convertedEnd };
     }
 
+
   return (
     <React.Fragment>
       <div className='h-screen w-screen flex justify-center items-center flex-col gap-10 px-80 container'>
@@ -56,26 +60,30 @@ const TimePageComponent = () => {
             <div className='w- container flex flex-col gap-5'>
                 <div className='flex justify-between w-full'>
                     <p className='text-xl font-semibold'>IST:</p>
-                    <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "Asia/Kolkata").convertedStart } <span>to</span> {convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "Asia/Kolkata").convertedEnd }</p>
-                </div>
- 
-                <div className='flex w-full justify-between'>
-                    <p className='text-xl font-semibold'>JST:</p>
-                    <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "Asia/Tokyo").convertedStart} <span>to</span> {convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "Asia/Tokyo").convertedEnd }</p>
+                    {timezoneData  && <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{timezoneData.IST.convertedStart } <span>to</span> {timezoneData.IST.convertedEnd }</p>}
                 </div>
 
                 <div className='flex w-full justify-between'>
+                    <p className='text-xl font-semibold'>JST:</p>
+                    {/* <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "Asia/Tokyo").convertedStart} <span>to</span> {convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "Asia/Tokyo").convertedEnd }</p> */}
+                    {timezoneData && <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{timezoneData.JST.convertedStart } <span>to</span> {timezoneData.JST.convertedEnd }</p>} 
+               </div>
+
+                <div className='flex w-full justify-between'>
                     <p className='text-xl font-semibold'>GMT:</p>
-                    <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{utcConvertedDate.startDate} <span>to</span> {utcConvertedDate.endDate }</p>
+                    {/* <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{utcConvertedDate.startDate} <span>to</span> {utcConvertedDate.endDate }</p> */}
+                    {timezoneData && <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{timezoneData.IST.convertedStart } <span>to</span> {timezoneData.IST.convertedEnd }</p>}
+
                 </div>
 
                 <div className='flex w-full justify-between'>
                     <p className='text-xl font-semibold'>Pacific:</p>
-                    <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "America/Los_Angeles").convertedStart} <span>to</span>  {convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "America/Los_Angeles").convertedEnd }</p>
+                    {/* <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "America/Los_Angeles").convertedStart} <span>to</span>  {convertTimeZone(utcConvertedDate.startDate, utcConvertedDate.endDate, "America/Los_Angeles").convertedEnd }</p> */}
+                    {timezoneData && <p className='bg-gray-200 px-4 py-1 rounded-md flex gap-3'>{timezoneData.Pacific.convertedStart } <span>to</span> {timezoneData.Pacific.convertedEnd }</p>}
                 </div>
 
             </div>
-        }
+        } 
 
         <div>
             <button disabled= {edit === false} className={` ring-0 text-white px-1 py-2 text-lg font-semibold rounded-lg w-28 ${edit? "bg-green-500 hover:bg-green-400 " : "bg-gray-400 cursor-not-allowed" }`}>Edit</button>
